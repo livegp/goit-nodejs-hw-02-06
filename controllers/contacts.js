@@ -1,50 +1,27 @@
 import contacts from "../models/contacts.js";
 import httpError from "../helpers/httpError.js";
-import Joi from "joi";
+import ctrlWrapper from "../helpers/ctrlWrapper.js";
 
-const addSchema = Joi.object({
-  name: Joi.string().min(3).max(30).required(),
-  email: Joi.string().email().required(),
-  phone: Joi.string().min(10).max(15).required(),
-});
-
-const listContacts = async (req, res, next) => {
-  try {
+const listContacts = async (_, res) => {
     const result = await contacts.listContacts();
     res.json(result);
-  } catch (error) {
-    next(error);
-  }
 };
 
-const getContactById = async (req, res, next) => {
-  try {
+const getContactById = async (req, res) => {
     const { id } = req.params;
     const result = await contacts.getContactById(id);
     if (!result) {
       throw httpError(404, "Not found");
     }
     res.json(result);
-  } catch (error) {
-    next(error);
-  }
 };
 
-const addContact = async (req, res, next) => {
-  try {
-    const { error } = addSchema.validate(req.body);
-    if (error) {
-      throw httpError(400, "missing required name field");
-    }
+const addContact = async (req, res) => {
     const result = await contacts.addContact(req.body);
-    res.status(201).json(result);
-  } catch (error) {
-    next(error);
-  } 
+    res.status(201).json(result); 
 }
 
-const removeContact = async (req, res, next) => {
-  try {
+const removeContact = async (req, res) => {
     const { id } = req.params;
     const result = await contacts.removeContact(id);
     if (!result) {
@@ -52,33 +29,22 @@ const removeContact = async (req, res, next) => {
     }
     res.json({
       message: "contact deleted",
-    });
-  } catch (error) {
-    next(error);
-  } 
+    }); 
 }
 
-const updateContact = async (req, res, next) => {
-  try {
-    const { error } = addSchema.validate(req.body);
-    if (error) {
-      throw httpError(400, "missing fields");
-    }
+const updateContact = async (req, res) => {
     const { id } = req.params;
     const result = await contacts.updateContact(id, req.body);
     if (!result) {
       throw httpError(404, "Not found");
     }
     res.json(result);
-  } catch (error) {
-    next(error);
-  } 
 }
 
 export default {
-  listContacts,
-  getContactById,
-  removeContact,
-  addContact,
-  updateContact,
+  listContacts: ctrlWrapper(listContacts),
+  getContactById: ctrlWrapper(getContactById),
+  removeContact: ctrlWrapper(removeContact),
+  addContact: ctrlWrapper(addContact),
+  updateContact: ctrlWrapper(updateContact),
 };
