@@ -48,8 +48,14 @@ router.post("/", async (req, res, next) => {
 
 router.delete("/:contactId", async (req, res, next) => {
   try {
-    // const result = await contacts.listContacts();
-    res.json(result);
+    const { contactId } = req.params;
+    const result = await contacts.removeContact(contactId);
+    if (!result) {
+      throw httpError(404, "Contact not found");
+    }
+    res.json({
+      message: "Contact deleted",
+    });
   } catch (error) {
     next(error);
   } 
@@ -57,7 +63,15 @@ router.delete("/:contactId", async (req, res, next) => {
 
 router.put("/:contactId", async (req, res, next) => {
   try {
-    // const result = await contacts.listContacts();
+    const { error } = addSchema.validate(req.body);
+    if (error) {
+      throw httpError(400, error.message);
+    }
+    const { contactId } = req.params;
+    const result = await contacts.updateContact(contactId, req.body);
+    if (!result) {
+      throw httpError(404, "Contact not found");
+    }
     res.json(result);
   } catch (error) {
     next(error);
