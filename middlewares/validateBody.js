@@ -7,13 +7,19 @@ const validateBody = (schema, errorType) => {
       let errorMessage;
       switch (errorType) {
         case "post":
-          errorMessage = `missing required ${error.details[0].context.key} field`;
+          if (error.details[0].type === "any.required") {
+            errorMessage = `missing required ${error.details[0].context.key} field`;
+          } else {
+            errorMessage = error.details[0].message;
+          }
           break;
         case "put":
-          errorMessage = "missing fields";
+          if (error.details[0].context.key) {
+            errorMessage = "missing fields";
+          } else {
+            errorMessage = error.details[0].message;
+          }
           break;
-        default:
-          errorMessage = `${error.details[0].message}`;
       }
       next(httpError(400, errorMessage));
     } else {
