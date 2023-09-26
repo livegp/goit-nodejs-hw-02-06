@@ -9,10 +9,10 @@ router.get("/", contacts.listContacts);
 
 router.get("/:id", contacts.getContactById);
 
-router.post("/", validateBody(addSchema), contacts.addContact);
+router.post("/", validateBody(addSchema, "missing required name field"), contacts.addContact);
 
 router.delete("/:id", contacts.removeContact);
 
-router.put("/:id", validateBody(addSchema), contacts.updateContact);
+router.put("/:id", validateBody(addSchema, "missing fields"), contacts.updateContact);
 
 export default router;
