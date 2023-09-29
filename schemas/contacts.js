@@ -18,7 +18,7 @@ const addSchema = Joi.object({
       "any.required": "missing required email field",
     }),
   phone: Joi.string()
-    .pattern(/^[+]\d{1,4}-\d{1,3}-\d{1,4}-\d{1,4}-\d{1,9}$/)
+    .pattern(/^\(\d{3}\) \d{3}-\d{4}$/)
     .required()
     .messages({
       "string.pattern.base": "The correct number format should be: +xx-xxx-xxx-xx-xx",
