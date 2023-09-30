@@ -1,18 +1,18 @@
 import { Router } from "express";
-import contacts from "../../controllers/contacts.js";
+import ctrl from "../../controllers/contacts.js";
 import validateBody from "../../middlewares/validateBody.js";
 import addSchema from "../../schemas/contacts.js";
 
 const router = Router();
 
-router.get("/", contacts.listContacts);
+router.get("/", ctrl.listContacts);
 
-router.get("/:id", contacts.getContactById);
+// router.get("/:id", ctrl.getContactById);
 
-router.post("/", validateBody(addSchema), contacts.addContact);
+// router.post("/", validateBody(addSchema), ctrl.addContact);
 
-router.delete("/:id", contacts.removeContact);
+// router.delete("/:id", ctrl.removeContact);
 
-router.put("/:id", validateBody(addSchema), contacts.updateContact);
+// router.put("/:id", validateBody(addSchema), ctrl.updateContact);
 
 export default router;
