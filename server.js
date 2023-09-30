@@ -7,7 +7,7 @@ mongoose
   .connect(DB_HOST)
   .then(() => {
     console.log("Database connection successful");
-    app.listen(PORT, () => console.log(`Server running: http://localhost:${PORT}`));
+    app.listen(PORT, () => console.log(`Server running: http://localhost:${PORT}/api/contacts`));
   })
   .catch((error) => {
     console.log(error.message)
