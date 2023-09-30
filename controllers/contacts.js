@@ -3,8 +3,8 @@ import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import Contact from "../models/contact.js";
 
 const listContacts = async (req, res) => {
-        const result = await Contact.find();
-        res.json(result);
+  const result = await Contact.find();
+  res.json(result);
 };
 
 // const getContactById = async (req, res) => {
@@ -18,7 +18,7 @@ const listContacts = async (req, res) => {
 
 // const addContact = async (req, res) => {
 //     const result = await contacts.addContact(req.body);
-//     res.status(201).json(result); 
+//     res.status(201).json(result);
 // }
 
 // const removeContact = async (req, res) => {
@@ -29,7 +29,7 @@ const listContacts = async (req, res) => {
 //     }
 //     res.json({
 //       message: "contact deleted",
-//     }); 
+//     });
 // }
 
 // const updateContact = async (req, res) => {
