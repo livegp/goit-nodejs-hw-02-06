@@ -47,7 +47,7 @@ const addSchema = Joi.object({
     "string.pattern.base": phonePatternErrMessage,
     "any.required": "Missing required phone field",
   }),
-  favorite: Joi.boolean().required().messages({
+  favorite: Joi.boolean().messages({
     "any.required": "Missing required favorite field",
   }),
 });
