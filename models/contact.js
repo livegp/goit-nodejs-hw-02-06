@@ -1,6 +1,7 @@
 import Joi from "joi";
 import { Schema, model } from "mongoose";
 import handleMongooseError from "../helpers/handleMongooseError.js";
+import { runValidatorsAtUpdate } from "./hooks.js";
 
 const nameRegexp = /^.{2,30}$/;
 const nameRegexpErrMessage = "The minimum length is 2 characters, and the maximum is 30 characters";
@@ -33,6 +34,8 @@ const contactSchema = new Schema(
 );
 
 contactSchema.post("save", handleMongooseError);
+contactSchema.pre("findOneAndUpdate", runValidatorsAtUpdate);
+contactSchema.post("findOneAndUpdate", handleMongooseError);
 
 const addSchema = Joi.object({
   name: Joi.string().pattern(nameRegexp).required().messages({
@@ -52,13 +55,13 @@ const addSchema = Joi.object({
   }),
 });
 
-const updateStatusSchema = Joi.object({
+const updateFavoriteSchema = Joi.object({
   favorite: Joi.boolean().required(),
 });
 
 export const schemas = {
   addSchema,
-  updateStatusSchema,
+  updateFavoriteSchema,
 };
 
 export const Contact = model("contact", contactSchema);
