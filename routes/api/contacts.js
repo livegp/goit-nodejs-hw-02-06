@@ -3,22 +3,23 @@ import ctrl from "../../controllers/contacts.js";
 import validateBody from "../../middlewares/validateBody.js";
 import {schemas} from "../../models/contact.js";
 import isValidId from "../../middlewares/isValidId.js";
+import authenticate from "../../middlewares/authenticate.js";
 
 const contactAddValidate = validateBody(schemas.addSchema)
 const contactUpdateFavoriteValidate = validateBody(schemas.updateFavoriteSchema)
 
 const router = Router();
 
-router.get("/", ctrl.listContacts);
+router.get("/", authenticate, ctrl.listContacts);
 
-router.get("/:id", isValidId, ctrl.getContactById);
+router.get("/:id", authenticate, isValidId, ctrl.getContactById);
 
-router.post("/", contactAddValidate, ctrl.addContact);
+router.post("/", authenticate, contactAddValidate, ctrl.addContact);
 
-router.delete("/:id",isValidId, ctrl.removeContact);
+router.delete("/:id", authenticate, isValidId, ctrl.removeContact);
 
-router.put("/:id",isValidId, contactAddValidate, ctrl.updateContact);
+router.put("/:id", authenticate, isValidId, contactAddValidate, ctrl.updateContact);
 
-router.patch("/:id/favorite",isValidId, contactUpdateFavoriteValidate, ctrl.updateFavoriteContact);
+router.patch("/:id/favorite", authenticate, isValidId, contactUpdateFavoriteValidate, ctrl.updateFavoriteContact);
 
 export default router;

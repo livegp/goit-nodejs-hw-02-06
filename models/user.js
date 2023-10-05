@@ -33,7 +33,11 @@ const userSchema = new Schema({
     type: String,
     required: true,
     match: [passwordRegexp, passwordRegexpErrMessage],
-  }
+  },
+  token: {
+    type: String,
+    default: null,
+  },
 }, { versionKey: false, timestamps: true  });
 
 userSchema.post("save", handleMongooseError);

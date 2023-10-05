@@ -1,14 +1,13 @@
 import httpError from "../helpers/httpError.js";
 import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import { User } from "../models/user.js";
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import dotenv from 'dotenv'
+import dotenv from "dotenv";
 
-dotenv.config()
+dotenv.config();
 
 const { SECRET_KEY } = process.env;
-console.log('SECRET_KEY', SECRET_KEY)
 
 const register = async (req, res) => {
   const { name, email, password } = req.body;
@@ -36,12 +35,26 @@ const login = async (req, res) => {
     id: user._id,
   };
   const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "24h" });
+  await User.findByIdAndUpdate(user._id, { token });
   res.json({
     token,
   });
 };
 
+const getCurrentUser = (req, res) => {
+  const { name, email } = req.user;
+  res.json({ name, email });
+};
+
+const logout = async (req, res) => {
+  const { _id } = req.user;
+  await User.findByIdAndUpdate(_id, { token: null });
+  res.json({ message: "Logout success" });
+};
+
 export default {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
+  getCurrentUser: ctrlWrapper(getCurrentUser),
+  logout: ctrlWrapper(logout),
 };
