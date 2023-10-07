@@ -2,11 +2,10 @@ import Joi from "joi";
 import { Schema, model } from "mongoose";
 import handleMongooseError from "../helpers/handleMongooseError.js";
 
-const nameRegexp = /^.{2,30}$/;
-const nameRegexpErrMessage = "The minimum length is 2 characters, and the maximum is 30 characters";
 const emailRegexp = /^\S+@\S+\.\S+$/;
 const emailRegexpErrMessage = "Invalid email format";
-const passwordRegexp = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*? ]).{8,}$/;
+const passwordRegexp =
+  /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*? ]).{8,}$/;
 const passwordRegexpErrMessage = `
 The password must meet the following criteria:
 - Minimum 8 characters in length.
@@ -17,44 +16,47 @@ The password must meet the following criteria:
 Please enter a valid password to proceed.
 `;
 
-const userSchema = new Schema({
-  name: {
-    type: String,
-    required: true,
-    match: [nameRegexp, nameRegexpErrMessage],
+const userSchema = new Schema(
+  {
+    password: {
+      type: String,
+      required: [true, "Set password for user"],
+      match: [passwordRegexp, passwordRegexpErrMessage],
+    },
+    email: {
+      type: String,
+      required: [true, "Email is required"],
+      unique: true,
+      match: [emailRegexp, emailRegexpErrMessage],
+    },
+    subscription: {
+      type: String,
+      enum: ["starter", "pro", "business"],
+      default: "starter",
+    },
+    token: {
+      type: String,
+      default: null,
+    },
   },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    match: [emailRegexp, emailRegexpErrMessage],
-  },
-  password: {
-    type: String,
-    required: true,
-    match: [passwordRegexp, passwordRegexpErrMessage],
-  },
-  token: {
-    type: String,
-    default: null,
-  },
-}, { versionKey: false, timestamps: true  });
+  { versionKey: false, timestamps: true }
+);
 
 userSchema.post("save", handleMongooseError);
 
 const registerSchema = Joi.object({
-  name: Joi.string().pattern(nameRegexp).required().messages({
-    "string.pattern.base": nameRegexpErrMessage,
-    "any.required": "Missing required name field",
+  password: Joi.string().pattern(passwordRegexp).required().messages({
+    "string.pattern.base": passwordRegexpErrMessage,
+    "any.required": "Missing required password field",
   }),
   email: Joi.string().pattern(emailRegexp).required().messages({
     "string.email": emailRegexpErrMessage,
     "any.required": "Missing required email field",
   }),
-  password: Joi.string().pattern(passwordRegexp).required().messages({
-    "string.pattern.base": passwordRegexpErrMessage,
-    "any.required": "Missing required password field",
-  }),
+  subscription: Joi.string()
+    .valid("starter", "pro", "business")
+    .default("starter")
+    .messages({ "any.only": "Invalid subscription" }),
 });
 
 const loginSchema = Joi.object({
@@ -68,9 +70,18 @@ const loginSchema = Joi.object({
   }),
 });
 
+const updateSubscriptionSchema = Joi.object({
+  subscription: Joi.string()
+    .valid("starter", "pro", "business")
+    .default("starter")
+    .required()
+    .messages({ "any.only": "Invalid subscription" }),
+});
+
 export const schemas = {
   registerSchema,
   loginSchema,
+  updateSubscriptionSchema,
 };
 
 export const User = model("user", userSchema);
