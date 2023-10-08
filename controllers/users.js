@@ -21,10 +21,14 @@ const register = async (req, res) => {
     password: hashPassword,
     subscription,
   });
-  res.json({
+  res.status(201).json({
     email: newUser.email,
     subscription: newUser.subscription,
   });
+  // res.json({
+  //   email: newUser.email,
+  //   subscription: newUser.subscription,
+  // });
 };
 
 const login = async (req, res) => {
@@ -62,7 +66,7 @@ const getCurrentUser = (req, res) => {
 const logout = async (req, res) => {
   const { user: { _id }, } = req;
   await User.findByIdAndUpdate(_id, { token: null });
-  res.json({ message: "Logout success" });
+  res.status(204).send();
 };
 
 const updateSubscription = async (req, res) => {

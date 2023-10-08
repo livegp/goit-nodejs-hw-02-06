@@ -1,7 +1,7 @@
 import express, { json } from 'express'
 import logger from 'morgan'
 import cors from 'cors'
-import authRouter from './routes/api/auth.js'
+import usersRouter from './routes/api/users.js'
 import contactsRouter from './routes/api/contacts.js'
 import dotenv from 'dotenv'
 
@@ -15,7 +15,7 @@ app.use(logger(formatsLogger))
 app.use(cors())
 app.use(json())
 
-app.use('/api/auth', authRouter)
+app.use('/api/users', usersRouter)
 app.use('/api/contacts', contactsRouter)
 
 app.use((req, res) => {

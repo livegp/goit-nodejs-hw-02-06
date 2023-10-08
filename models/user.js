@@ -16,6 +16,8 @@ The password must meet the following criteria:
 Please enter a valid password to proceed.
 `;
 
+const validSubscriptionOptions = ["starter", "pro", "business"];
+
 const userSchema = new Schema(
   {
     password: {
@@ -31,8 +33,8 @@ const userSchema = new Schema(
     },
     subscription: {
       type: String,
-      enum: ["starter", "pro", "business"],
-      default: "starter",
+      enum: validSubscriptionOptions,
+      default: validSubscriptionOptions[0],
     },
     token: {
       type: String,
@@ -54,8 +56,8 @@ const registerSchema = Joi.object({
     "any.required": "Missing required email field",
   }),
   subscription: Joi.string()
-    .valid("starter", "pro", "business")
-    .default("starter")
+  .valid(...validSubscriptionOptions)
+    .default(validSubscriptionOptions[0])
     .messages({ "any.only": "Invalid subscription" }),
 });
 
@@ -72,11 +74,14 @@ const loginSchema = Joi.object({
 
 const updateSubscriptionSchema = Joi.object({
   subscription: Joi.string()
-    .valid("starter", "pro", "business")
-    .default("starter")
+    .valid(...validSubscriptionOptions)
+    .default(validSubscriptionOptions[0])
     .required()
-    .messages({ "any.only": "Invalid subscription" }),
+    .messages({
+      "any.only": `Subscription must be one of ${validSubscriptionOptions.join(", ")}.`,
+    }),
 });
+
 
 export const schemas = {
   registerSchema,
