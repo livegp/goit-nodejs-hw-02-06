@@ -25,10 +25,6 @@ const register = async (req, res) => {
     email: newUser.email,
     subscription: newUser.subscription,
   });
-  // res.json({
-  //   email: newUser.email,
-  //   subscription: newUser.subscription,
-  // });
 };
 
 const login = async (req, res) => {
