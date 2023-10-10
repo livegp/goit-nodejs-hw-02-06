@@ -8,6 +8,7 @@ import authenticate from "../../middlewares/authenticate.js";
 const userRegisterValidate = validateBody(schemas.registerSchema);
 const userLoginValidate = validateBody(schemas.loginSchema);
 const userUpdateSubscriptionValidate = validateBody(schemas.updateSubscriptionSchema);
+const userAvatarUpload = upload.single("avatar");
 
 const router = Router();
 
@@ -21,6 +22,6 @@ router.post("/logout", authenticate, ctrl.logout);
 
 router.patch("/", authenticate, userUpdateSubscriptionValidate, ctrl.updateSubscription);
 
-router.patch("/avatars", authenticate, upload.single("avatar"), ctrl.updateAvatar);
+router.patch("/avatars", authenticate, userAvatarUpload, ctrl.updateAvatar);
 
 export default router;
