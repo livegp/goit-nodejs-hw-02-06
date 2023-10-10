@@ -1,5 +1,4 @@
-import { promisify } from 'util';
-import fs from "fs";
+import fs from 'fs/promises';
 import path from "path";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
@@ -87,8 +86,7 @@ const updateSubscription = async (req, res) => {
   });
 };
 
-const updateAvatar = async (req, res, next) => {
-  const renameAsync = promisify(fs.rename);
+const updateAvatar = async (req, res, next) => {;
   const avatarsDir = path.resolve("public", "avatars");
   const { _id } = req.user;
   const { path: tempUpload, originalname } = req.file;
@@ -96,7 +94,7 @@ const updateAvatar = async (req, res, next) => {
   const resultUpload = path.resolve(avatarsDir, filename);
   const image = await Jimp.read(tempUpload);
   image.resize(200, 200).write(tempUpload);
-  await renameAsync(tempUpload, resultUpload);
+  await fs.rename(tempUpload, resultUpload);
   const avatarURL = path.resolve("avatars", filename);
   await User.findByIdAndUpdate(_id, { avatarURL });
   res.json({ avatarURL });
