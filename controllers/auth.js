@@ -1,25 +1,34 @@
-import httpError from "../helpers/httpError.js";
-import ctrlWrapper from "../helpers/ctrlWrapper.js";
-import { User } from "../models/user.js";
-import jwt from "jsonwebtoken";
+import { promisify } from 'util';
+import fs from "fs";
+import path from "path";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
+import Jimp from "jimp";
+import jwt from "jsonwebtoken";
+import gravatar from "gravatar";
+import { User } from "../models/user.js";
+import httpError from "../helpers/httpError.js";
+import ctrlWrapper from "../helpers/ctrlWrapper.js";
 
 dotenv.config();
 
 const { SECRET_KEY } = process.env;
 
 const register = async (req, res) => {
-  const {
-    body: { email, password, subscription },
-  } = req;
+  const { email, password, subscription } = req.body;
   const user = await User.findOne({ email });
   if (user) throw httpError(409, "Email in use");
   const hashPassword = await bcrypt.hash(password, 10);
+  const avatarURL = gravatar.url(email, {
+    s: "200",
+    r: "pg",
+    d: "mm",
+  });
   const newUser = await User.create({
     email,
     password: hashPassword,
     subscription,
+    avatarURL,
   });
   res.status(201).json({
     email: newUser.email,
@@ -28,9 +37,7 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  const {
-    body: { email, password },
-  } = req;
+  const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (!user) {
     throw httpError(401, "Email or password is wrong");
@@ -55,12 +62,12 @@ const login = async (req, res) => {
 };
 
 const getCurrentUser = (req, res) => {
-  const { user: { email, subscription }, } = req;
+  const { email, subscription } = req.user;
   res.json({ email, subscription });
 };
 
 const logout = async (req, res) => {
-  const { user: { _id }, } = req;
+  const { _id } = req.user;
   await User.findByIdAndUpdate(_id, { token: null });
   res.status(204).send();
 };
@@ -81,10 +88,26 @@ const updateSubscription = async (req, res) => {
   });
 };
 
+const updateAvatar = async (req, res, next) => {
+  const renameAsync = promisify(fs.rename);
+  const avatarsDir = path.resolve("public", "avatars");
+  const { _id } = req.user;
+  const { path: tempUpload, originalname } = req.file;
+  const filename = `${_id}_${originalname}`;
+  const resultUpload = path.resolve(avatarsDir, filename);
+  const image = await Jimp.read(tempUpload);
+  image.resize(200, 200).write(tempUpload);
+  await renameAsync(tempUpload, resultUpload);
+  const avatarURL = path.resolve("avatars", filename);
+  await User.findByIdAndUpdate(_id, { avatarURL });
+  res.json({ avatarURL });
+};
+
 export default {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
   getCurrentUser: ctrlWrapper(getCurrentUser),
   logout: ctrlWrapper(logout),
   updateSubscription: ctrlWrapper(updateSubscription),
+  updateAvatar: ctrlWrapper(updateAvatar),
 };

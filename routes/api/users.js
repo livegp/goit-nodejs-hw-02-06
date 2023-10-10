@@ -1,7 +1,8 @@
 import { Router } from "express";
-import ctrl from "../../controllers/users.js";
-import validateBody from "../../middlewares/validateBody.js";
 import {schemas} from "../../models/user.js";
+import ctrl from "../../controllers/auth.js";
+import upload from "../../middlewares/upload.js";
+import validateBody from "../../middlewares/validateBody.js";
 import authenticate from "../../middlewares/authenticate.js";
 
 const userRegisterValidate = validateBody(schemas.registerSchema);
@@ -19,5 +20,7 @@ router.get("/current", authenticate, ctrl.getCurrentUser);
 router.post("/logout", authenticate, ctrl.logout);
 
 router.patch("/", authenticate, userUpdateSubscriptionValidate, ctrl.updateSubscription);
+
+router.patch("/avatars", authenticate, upload.single("avatar"), ctrl.updateAvatar);
 
 export default router;
