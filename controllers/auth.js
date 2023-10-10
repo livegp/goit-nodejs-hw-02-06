@@ -12,8 +12,6 @@ import ctrlWrapper from "../helpers/ctrlWrapper.js";
 
 dotenv.config();
 
-const { SECRET_KEY } = process.env;
-
 const register = async (req, res) => {
   const { email, password, subscription } = req.body;
   const user = await User.findOne({ email });
@@ -49,6 +47,7 @@ const login = async (req, res) => {
   const payload = {
     id: user._id,
   };
+  const { SECRET_KEY } = process.env;
   const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "24h" });
   await User.findByIdAndUpdate(user._id, { token });
   const responseUser = {

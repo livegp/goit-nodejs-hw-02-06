@@ -2,9 +2,8 @@ import jwt from 'jsonwebtoken';
 import { User } from '../models/user.js';
 import httpError from "../helpers/httpError.js";
 
-const { SECRET_KEY } = process.env;
-
 const authenticate = async (req, res, next) => {
+  const { SECRET_KEY } = process.env;
   const { authorization = "" } = req.headers;
   const [bearer, token] = authorization.split(" ");
   if (bearer !== "Bearer") {
