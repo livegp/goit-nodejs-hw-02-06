@@ -1,8 +1,8 @@
 import { Router } from "express";
-import ctrl from "../../controllers/contacts.js";
-import validateBody from "../../middlewares/validateBody.js";
 import {schemas} from "../../models/contact.js";
+import ctrl from "../../controllers/contacts.js";
 import isValidId from "../../middlewares/isValidId.js";
+import validateBody from "../../middlewares/validateBody.js";
 import authenticate from "../../middlewares/authenticate.js";
 
 const contactAddValidate = validateBody(schemas.addSchema)

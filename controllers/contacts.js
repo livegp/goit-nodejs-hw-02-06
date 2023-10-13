@@ -1,6 +1,6 @@
+import { Contact } from "../models/contact.js";
 import httpError from "../helpers/httpError.js";
 import ctrlWrapper from "../helpers/ctrlWrapper.js";
-import { Contact } from "../models/contact.js";
 
 const listContacts = async (req, res) => {
   const { _id: owner } = req.user;

@@ -1,7 +1,7 @@
-import Joi from "joi";
 import { Schema, model } from "mongoose";
-import handleMongooseError from "../helpers/handleMongooseError.js";
+import Joi from "joi";
 import { runValidatorsAtUpdate } from "./hooks.js";
+import handleMongooseError from "../helpers/handleMongooseError.js";
 
 const nameRegexp = /^.{2,30}$/;
 const nameRegexpErrMessage = "The minimum length is 2 characters, and the maximum is 30 characters";
