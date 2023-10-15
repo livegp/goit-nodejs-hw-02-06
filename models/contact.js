@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import Joi from "joi";
+
 import { runValidatorsAtUpdate } from "./hooks.js";
 import handleMongooseError from "../helpers/handleMongooseError.js";
 

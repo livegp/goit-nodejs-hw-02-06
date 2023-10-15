@@ -2,6 +2,7 @@ import express, { json } from "express";
 import cors from "cors";
 import logger from "morgan";
 import dotenv from "dotenv";
+
 import usersRouter from "./routes/api/users.js";
 import contactsRouter from "./routes/api/contacts.js";
 
@@ -13,7 +14,7 @@ const formatsLogger = app.get("env") === "development" ? "dev" : "short";
 
 app.use(logger(formatsLogger));
 app.use(cors());
-app.use(express.json());
+app.use(json());
 app.use(express.static("public"));
 
 app.use("/api/users", usersRouter);

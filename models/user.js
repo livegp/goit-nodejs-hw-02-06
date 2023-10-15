@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import Joi from "joi";
+
 import handleMongooseError from "../helpers/handleMongooseError.js";
 
 const emailRegexp = /^\S+@\S+\.\S+$/;
@@ -43,6 +44,15 @@ const userSchema = new Schema(
     avatarURL: {
       type: String,
     },
+    verify: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: {
+      type: String,
+      default: null,
+      required: [true, "Verify token is required"],
+    },
   },
   { versionKey: false, timestamps: true }
 );
@@ -59,10 +69,12 @@ const registerSchema = Joi.object({
     "any.required": "Missing required email field",
   }),
   subscription: Joi.string()
-  .valid(...validSubscriptionOptions)
+    .valid(...validSubscriptionOptions)
     .default(validSubscriptionOptions[0])
     .messages({ "any.only": "Invalid subscription" }),
 });
+
+const verifyEmailSchema = Joi.object({});
 
 const loginSchema = Joi.object({
   email: Joi.string().pattern(emailRegexp).required().messages({
@@ -81,13 +93,15 @@ const updateSubscriptionSchema = Joi.object({
     .default(validSubscriptionOptions[0])
     .required()
     .messages({
-      "any.only": `Subscription must be one of ${validSubscriptionOptions.join(", ")}.`,
+      "any.only": `Subscription must be one of ${validSubscriptionOptions.join(
+        ", "
+      )}.`,
     }),
 });
 
-
 export const schemas = {
   registerSchema,
+  verifyEmailSchema,
   loginSchema,
   updateSubscriptionSchema,
 };
