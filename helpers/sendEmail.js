@@ -27,6 +27,6 @@ const email = {
 const sendEmail = transport
   .sendMail(email)
   .then(() => console.log("Email sent"))
-  .catch((err) => console.log(err.message));
+  .catch((err) => console.log("err",err.message));
 
 export default sendEmail;
