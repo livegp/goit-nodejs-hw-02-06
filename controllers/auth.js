@@ -37,7 +37,7 @@ const register = async (req, res) => {
   const verifyEmail = {
     to: email,
     subject: "Verify your email",
-    html: `<a href="${BASE_URL}${PORT}/api/auth/verify/${verificationToken}" target="_blank">
+    html: `<a href="${BASE_URL}${PORT}/api/users/verify/${verificationToken}" target="_blank">
     Verify email
     </a>`,
   };
@@ -49,20 +49,12 @@ const register = async (req, res) => {
 };
 
 const verifyEmail = async (req, res) => {
+  console.log(req.params);
   const { verificationToken } = req.params;
   const user = await User.findOne({ verificationToken });
   if (!user) throw httpError(400, "Invalid verification code");
   await User.findByIdAndUpdate(user._id, { verify: true, verificationToken: null });
   res.json({ message: "Email successfully verified" });
-  const verifyEmail = {
-    to: email,
-    subject: "Verify your email",
-    html: `<a href="${BASE_URL}${PORT}/api/auth/verify/${user.verificationToken}" target="_blank">
-    Verify email
-    </a>`,
-  };
-  await sendEmail(verifyEmail);
-  res.json({ message: "Email verify send success" });
 };
 
 const resendVerifyEmail = async (req, res) => {
@@ -70,6 +62,15 @@ const resendVerifyEmail = async (req, res) => {
   const user = await User.findOne({ email });
   if (!user) throw httpError(400, "User not found");
   if (user.verify) throw httpError(400, "Email already verified");
+  const verifyEmail = {
+    to: email,
+    subject: "Verify your email",
+    html: `<a href="${BASE_URL}${PORT}/api/users/verify/${user.verificationToken}" target="_blank">
+    Verify email
+    </a>`,
+  };
+  await sendEmail(verifyEmail);
+  res.json({ message: "Email verify send success" });
 };
 
 const login = async (req, res) => {

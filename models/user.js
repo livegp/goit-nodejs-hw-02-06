@@ -74,8 +74,11 @@ const registerSchema = Joi.object({
     .messages({ "any.only": "Invalid subscription" }),
 });
 
-const verifyEmailSchema = Joi.object({
-  
+const emailSchema = Joi.object({
+  email: Joi.string().pattern(emailRegexp).required().messages({
+    "string.email": emailRegexpErrMessage,
+    "any.required": "Missing required email field",
+  }),
 });
 
 const loginSchema = Joi.object({
@@ -103,7 +106,7 @@ const updateSubscriptionSchema = Joi.object({
 
 export const schemas = {
   registerSchema,
-  verifyEmailSchema,
+  emailSchema,
   loginSchema,
   updateSubscriptionSchema,
 };

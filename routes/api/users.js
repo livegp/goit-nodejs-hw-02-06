@@ -7,7 +7,7 @@ import validateBody from "../../middlewares/validateBody.js";
 import authenticate from "../../middlewares/authenticate.js";
 
 const userRegisterValidate = validateBody(schemas.registerSchema);
-const userVerifyEmailValidate = validateBody(schemas.verifyEmailSchema);
+const userEmailValidate = validateBody(schemas.emailSchema);
 const userLoginValidate = validateBody(schemas.loginSchema);
 const userUpdateSubscriptionValidate = validateBody(schemas.updateSubscriptionSchema);
 const userAvatarUpload = upload.single("avatar");
@@ -18,7 +18,7 @@ router.post("/register", userRegisterValidate, ctrl.register);
 
 router.get("/verify/:verificationToken", ctrl.verifyEmail);
 
-router.post("/verify", userVerifyEmailValidate, ctrl.resendVerifyEmail);
+router.post("/verify", userEmailValidate, ctrl.resendVerifyEmail);
 
 router.post("/login", userLoginValidate, ctrl.login);
 
