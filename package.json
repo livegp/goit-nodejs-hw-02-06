@@ -7,7 +7,6 @@
     "node": ">18.16.1"
   },
   "scripts": {
-    "dev": "cross-env NODE_ENV=development nodemon ./helpers/sendEmail.js",
     "start": "cross-env NODE_ENV=production node ./server.js",
     "start:dev": "cross-env NODE_ENV=development nodemon ./server.js",
     "lint": "eslint **/*.js",

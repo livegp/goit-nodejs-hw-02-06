@@ -5,6 +5,11 @@ dotenv.config();
 
 const { EMAIL, EMAIL_HOST, EMAIL_PORT, EMAIL_PASSWORD } = process.env;
 
+if (!EMAIL || !EMAIL_HOST || !EMAIL_PORT || !EMAIL_PASSWORD) {
+  console.error("One or more required environment variables are missing.");
+  process.exit(1);
+}
+
 const nodemailerConfig = {
   host: EMAIL_HOST,
   port: EMAIL_PORT,
@@ -17,16 +22,16 @@ const nodemailerConfig = {
 
 const transport = nodemailer.createTransport(nodemailerConfig);
 
-const email = {
-  to: "live.gp@gmail.com",
-  from: EMAIL,
-  subject: "Test email",
-  text: "Hello world",
+const sendEmail = async (data) => {
+  const email = { ...data, from: EMAIL };
+  try {
+    await transport.sendMail(email);
+    return true;
+  } catch (error) {
+    console.error(error.message);
+    return false;
+  }
 };
 
-const sendEmail = transport
-  .sendMail(email)
-  .then(() => console.log("Email sent"))
-  .catch((err) => console.log("err",err.message));
 
 export default sendEmail;
