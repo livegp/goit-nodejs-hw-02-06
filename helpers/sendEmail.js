@@ -2,7 +2,6 @@ import dotenv from "dotenv";
 import nodemailer from "nodemailer";
 
 dotenv.config();
-
 const { EMAIL, EMAIL_HOST, EMAIL_PORT, EMAIL_PASSWORD } = process.env;
 
 if (!EMAIL || !EMAIL_HOST || !EMAIL_PORT || !EMAIL_PASSWORD) {

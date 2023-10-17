@@ -65,7 +65,7 @@ const registerSchema = Joi.object({
     "any.required": "Missing required password field",
   }),
   email: Joi.string().pattern(emailRegexp).required().messages({
-    "string.email": emailRegexpErrMessage,
+    "string.pattern.base": emailRegexpErrMessage,
     "any.required": "Missing required email field",
   }),
   subscription: Joi.string()
@@ -76,8 +76,8 @@ const registerSchema = Joi.object({
 
 const emailSchema = Joi.object({
   email: Joi.string().pattern(emailRegexp).required().messages({
-    "string.email": emailRegexpErrMessage,
-    "any.required": "Missing required email field",
+    "string.pattern.base": emailRegexpErrMessage,
+    "any.required": "Missing required field email",
   }),
 });
 

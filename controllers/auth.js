@@ -13,7 +13,6 @@ import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import sendEmail from "../helpers/sendEmail.js";
 
 dotenv.config();
-
 const { SECRET_KEY, BASE_URL, PORT } = process.env;
 
 const register = async (req, res) => {
@@ -49,7 +48,6 @@ const register = async (req, res) => {
 };
 
 const verifyEmail = async (req, res) => {
-  console.log(req.params);
   const { verificationToken } = req.params;
   const user = await User.findOne({ verificationToken });
   if (!user) throw httpError(400, "Invalid verification code");
@@ -60,8 +58,8 @@ const verifyEmail = async (req, res) => {
 const resendVerifyEmail = async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({ email });
-  if (!user) throw httpError(400, "User not found");
-  if (user.verify) throw httpError(400, "Email already verified");
+  if (!user) throw httpError(404, "User not found");
+  if (user.verify) throw httpError(400, "Verification has already been passed");
   const verifyEmail = {
     to: email,
     subject: "Verify your email",
@@ -129,7 +127,7 @@ const updateSubscription = async (req, res) => {
 };
 
 const updateAvatar = async (req, res, next) => {
-  const avatarsDir = path.join("public", "avatars");
+  const avatarsDir = path.resolve("public", "avatars");
   const { _id } = req.user;
   const { path: tempUpload, originalname } = req.file;
   const filename = `${_id}_${originalname}`;
