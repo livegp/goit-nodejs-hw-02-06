@@ -13,7 +13,7 @@ import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import sendEmail from "../helpers/sendEmail.js";
 
 dotenv.config();
-const { SECRET_KEY, BASE_URL, PORT } = process.env;
+const { SECRET_KEY, BASE_URL } = process.env;
 
 const register = async (req, res) => {
   const { email, password, subscription } = req.body;
@@ -36,7 +36,7 @@ const register = async (req, res) => {
   const verifyEmail = {
     to: email,
     subject: "Verify your email",
-    html: `<a href="${BASE_URL}${PORT}/api/users/verify/${verificationToken}" target="_blank">
+    html: `<a href="${BASE_URL}/api/users/verify/${verificationToken}" target="_blank">
     Verify email
     </a>`,
   };
@@ -63,7 +63,7 @@ const resendVerifyEmail = async (req, res) => {
   const verifyEmail = {
     to: email,
     subject: "Verify your email",
-    html: `<a href="${BASE_URL}${PORT}/api/users/verify/${user.verificationToken}" target="_blank">
+    html: `<a href="${BASE_URL}/api/users/verify/${user.verificationToken}" target="_blank">
     Verify email
     </a>`,
   };
