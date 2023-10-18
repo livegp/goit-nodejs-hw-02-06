@@ -7,6 +7,8 @@ const validateBody = (schema) => {
       let errorMessage;
       if (error.details.some(detail => detail.context.key === 'favorite')) {
         errorMessage = "missing field favorite";
+      } else if (error.details.some(detail => detail.context.key === 'email')) {
+        errorMessage = "missing required field email";
       } else if ((!req.body || Object.keys(req.body).length === 0)) { 
         errorMessage = "missing fields"
       } else {
